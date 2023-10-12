@@ -12,18 +12,20 @@ public class PokemonGuesser : MonoBehaviour
     public TMP_InputField input;
     public APIConnectionController apiConnectionController;
 
+    private Pokemon pokemon = null;
+
     private string pokemonName = null;
 
     // Start is called before the first frame update
     void Start()
     {
-        
+        CallNewPokemon();
     }
 
     // Update is called once per frame
     void Update()
     {
-        pokemonName = Pokemon.GetPokemonName();
+        pokemonName = pokemon.GetPokemonName();
     }
 
     public void GuessPokemon(){
@@ -37,13 +39,13 @@ public class PokemonGuesser : MonoBehaviour
     }
 
     public void CallNewPokemon(){
-        apiConnectionController.NewPokemon();
+        pokemon = EventsManager.onPokemonSpawned(); 
         pokemonText.text = "Who's that Pokemon?";
         input.text = "";
     }
 
     private void UnshadowPokemon(){
-        Pokemon.GetPokemonImg().color = new Color32(255,255,225,255);
+        pokemon.GetPokemonImg().color = new Color32(255,255,225,255);
     }
     
 }

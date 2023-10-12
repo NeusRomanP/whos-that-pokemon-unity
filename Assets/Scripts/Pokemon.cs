@@ -3,24 +3,29 @@ using System.Collections.Generic;
 using UnityEngine.UI;
 using UnityEngine;
 
-public static class Pokemon
+public class Pokemon
 {
     private static string pokemonName = null;
     private static Image pokemonImg = null;
 
-    public static string GetPokemonName(){
+    public Pokemon(string name, Image image){
+        pokemonName = name;
+        pokemonImg = image;
+    }
+
+    public string GetPokemonName(){
         return pokemonName;
     }
 
-    public static void SetPokemonName(string name){
+    public void SetPokemonName(string name){
         pokemonName = name;
     }
 
-    public static Image GetPokemonImg(){
+    public Image GetPokemonImg(){
         return pokemonImg;
     }
 
-    public static void SetPokemonImg(Image img){
+    public void SetPokemonImg(Image img){
         pokemonImg = img;
     }
 }

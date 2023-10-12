@@ -9,16 +9,25 @@ using System;
 public class APIConnectionController : MonoBehaviour
 {
 
+    public delegate void OnPokemonSpawned();
+    public static OnPokemonSpawned onPokemonSpawned;
+
     private string URL = "https://pokeapi.co/api/v2/";
+    private string pokemonName;
+    private Pokemon pokemon;
 
     public Image img = null;
     private Texture2D downloadedTexture = null;
 
-    // Start is called before the first frame update
+    
+    private void OnEnable()
+    {
+        EventsManager.onPokemonSpawned += NewPokemon;
+    }
+    
     void Start()
     {
-        Pokemon.SetPokemonImg(img);
-        NewPokemon();
+        
     }
 
     // Update is called once per frame
@@ -27,11 +36,18 @@ public class APIConnectionController : MonoBehaviour
         
     }
 
-    public void NewPokemon(){
+    private void OnDisable()
+    {
+        EventsManager.onPokemonSpawned -= NewPokemon;
+    }
+
+    public Pokemon NewPokemon(){
         ShadowPokemon();
         int number = GetRandomNumber();
         StartCoroutine(GetPokemon(number));
         StartCoroutine(GetPokemonImage(number));
+        pokemon = new Pokemon(pokemonName, img);
+        return pokemon;
     }
 
     private int GetRandomNumber(){
@@ -48,7 +64,8 @@ public class APIConnectionController : MonoBehaviour
             }else{
                 string json = request.downloadHandler.text;
                 SimpleJSON.JSONNode data = SimpleJSON.JSON.Parse(json);
-                Pokemon.SetPokemonName(data["name"]);
+                //Pokemon.SetPokemonName(data["name"]);
+                pokemon.SetPokemonName(data["name"]);
             }
         }
     }
@@ -88,13 +105,13 @@ public class APIConnectionController : MonoBehaviour
 
                 request.Dispose();
 
-                Pokemon.GetPokemonImg().GetComponent<Image>().sprite = Sprite.Create(downloadedTexture, new Rect(0, 0, downloadedTexture.width, downloadedTexture.height), new Vector2(0, 0));
+                img.GetComponent<Image>().sprite = Sprite.Create(downloadedTexture, new Rect(0, 0, downloadedTexture.width, downloadedTexture.height), new Vector2(0, 0));
             }
         }
     }
 
     private void ShadowPokemon(){
-        Pokemon.GetPokemonImg().color = new Color32(0,0,0,255);
+        img.color = new Color32(0,0,0,255);
     }
 
 }
